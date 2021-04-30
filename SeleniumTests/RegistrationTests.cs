@@ -12,7 +12,7 @@ using WebDriverManager.Helpers;
 
 namespace SeleniumTests
 {
-    public class Tests
+    public class RegistrationTests
     {
         private IWebDriver _webDriver;
         
@@ -33,27 +33,31 @@ namespace SeleniumTests
         {
             _webDriver.Navigate().GoToUrl("https://newbookmodels.com/");
             _webDriver.FindElement(By.CssSelector("[class*=Navbar__signUp]")).Click();
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
             
-            _webDriver.FindElement(By.CssSelector("[placeholder=Johnny]")).SendKeys("MaBelle");
-            _webDriver.FindElement(By.CssSelector("[placeholder=Appleseed]")).SendKeys("Parker");
-            _webDriver.FindElement(By.CssSelector("[name=email]")).SendKeys("yapah53364@laraskey.com");
+            var date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm");
+            var email = $"mabel.{date}@gmail.com";
+            
+            _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("MaBelle");
+            _webDriver.FindElement(By.CssSelector("[name=last_name]")).SendKeys("Parker");
+            _webDriver.FindElement(By.CssSelector("[name=email]")).SendKeys(email);
             _webDriver.FindElement(By.CssSelector("[name=password]")).SendKeys("Mabel1234!");
             _webDriver.FindElement(By.CssSelector("[name=password_confirm]")).SendKeys("Mabel1234!");
             _webDriver.FindElement(By.CssSelector("[name=phone_number]")).SendKeys("123.321.1122");
             
             _webDriver.FindElement(By.CssSelector("[type=submit]")).Click();
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
             
             _webDriver.FindElement(By.CssSelector("[name=company_name]")).SendKeys("Henlo World Inc.");
             _webDriver.FindElement(By.CssSelector("[name=company_website]")).SendKeys("henloworldinc.com");
-            _webDriver.FindElement(By.CssSelector("[name=location]")).SendKeys("d");
-            _webDriver.FindElement(By.CssSelector("[name=location]")).Click();
-            
             _webDriver.FindElement(By.CssSelector("[name=industry]")).Click();
             _webDriver.FindElement(By.CssSelector("[class=Select__optionText--OxKln]")).Click();
+            _webDriver.FindElement(By.CssSelector("[name=location]")).SendKeys("da");
+            Thread.Sleep(2000);
+            _webDriver.FindElement(By.CssSelector("[class=pac-matched]")).Click();
             
-            Thread.Sleep(5000);
+            _webDriver.FindElement(By.CssSelector("[class*=SignupCompanyForm__submitButton--3mz3p]")).Click();
+            Thread.Sleep(3000);
         }
 
         [Test]
