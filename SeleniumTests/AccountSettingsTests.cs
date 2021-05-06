@@ -17,13 +17,19 @@ namespace SeleniumTests
         internal IWebDriver _webDriver;
         
         private static readonly By _genInfoEditButton =
-            By.XPath("nb-account-info-general-information .edit-switcher__icon_type_edit");
+            By.XPath("/html/body/nb-app/ng-component/nb-internal-layout/common-layout/section/div/ng-component/nb-account-info-edit/common-border/div[1]/div/nb-account-info-general-information/form/div[1]/div/nb-edit-switcher/div/div");
         private static readonly By _firstNameField = By.CssSelector("[class=input__self input__self_type_text-underline ng-untouched ng-pristine ng-valid]");
-
         private static readonly By _clearFirstName =
             By.CssSelector(
                 "[class=ng-valid ng-touched input__self input__self_error input__self_type_text-underline ng-dirty]");
-        
+        private static readonly By _logOutButton = By.CssSelector("type=logout");
+        private static readonly By _profileLink = By.XPath("/html/body/nb-app/ng-component/nb-internal-layout/common-layout/section/div/div[2]/div/div/nb-link[2]/div");
+        private static readonly By _cardName = By.XPath(
+            "/html/body/nb-app/ng-component/nb-internal-layout/common-layout/section/div/ng-component/nb-account-info-edit/common-border/div[4]/div/nb-stripe-card-bind-container/nb-stripe-card-bind/div/form/common-input/label/input");
+        private static readonly By _cardNumber = By.XPath("//*[@id='root']/form/div/div[2]/span[1]/span[2]/div/div[2]/span/input");
+        private static readonly By _cardYear = By.XPath("//*[@id='root']/form/div/div[2]/span[2]/span/span/input");
+        private static readonly By _cardCVV = By.XPath("//*[@id='root']/form/div/div[2]/span[3]/span/span/input");
+            
         public SettingsPage(IWebDriver webDriver)
         {
             _webDriver = webDriver;
@@ -38,6 +44,13 @@ namespace SeleniumTests
         public SettingsPage ClickEditGenInfo()
         {
             _webDriver.FindElement(_genInfoEditButton).Click();
+            Thread.Sleep(1500);
+            return this;
+        }
+
+        public SettingsPage ClickLogOut()
+        {
+            _webDriver.FindElement(_logOutButton).Click();
             return this;
         }
 
@@ -45,6 +58,21 @@ namespace SeleniumTests
         {
             _webDriver.FindElement(_firstNameField).Clear();
             _webDriver.FindElement(_clearFirstName).SendKeys(name);
+            return this;
+        }
+
+        public SettingsPage SwitchToProfileSettings()
+        {
+            _webDriver.FindElement(_profileLink).Click();
+            return this;
+        }
+
+        public SettingsPage SetCardInfo()
+        {
+            _webDriver.FindElement(_cardName).SendKeys("MaBelle Parker");
+            _webDriver.FindElement(_cardNumber).SendKeys("5019 5555 4444 5555");
+            _webDriver.FindElement(_cardYear).SendKeys("0330");
+            _webDriver.FindElement(_cardCVV).SendKeys("737");
             return this;
         }
     }
@@ -76,7 +104,7 @@ namespace SeleniumTests
         public void EditAccount()
         {
             var email = CreateNewEmail(out var date);
-            
+
             _registrationPage.GoToRegistrationPage()
                 .SetFirstName("MaBelle")
                 .SetLastName("Parker")
@@ -84,30 +112,56 @@ namespace SeleniumTests
                 .SetPassword("Mabel1234!")
                 .SetConfirmPassword("Mabel1234!")
                 .SetPhone("123.321.1122")
-                .ClickSubmitButton()
-                .SetCompanyName("Henlo World Inc.")
-                .SetCompanyWebsite("henloworldinc.com")
-                .ClickCompanyIndustry()
-                .ClickLocation("da")
-                .ClickFinishButton();
+                .ClickSubmitButton();
 
             _settingspage.GoToEditPage()
                 .ClickEditGenInfo()
                 .SetNewFirstName("Svitlanka");
             
-            _webDriver.FindElement(By.CssSelector("[class=input__self input__self_type_text-underline ng-pristine ng-valid ng-touched]")).Clear();
-            _webDriver.FindElement(By.CssSelector("[class=edit-switcher__icon_type_edit]")).SendKeys("Svitlanka");
+        }
+
+        [Test]
+        public void EditProfile()
+        {
+            var email = CreateNewEmail(out var date);
+
+            _registrationPage.GoToRegistrationPage()
+                .SetFirstName("MaBelle")
+                .SetLastName("Parker")
+                .SetEmail(email)
+                .SetPassword("Mabel1234!")
+                .SetConfirmPassword("Mabel1234!")
+                .SetPhone("123.321.1122")
+                .ClickSubmitButton();
+
             Thread.Sleep(1000);
-            _webDriver.FindElement(By.CssSelector("[class=input__self input__self_type_text-underline ng-untouched ng-pristine ng-valid pac-target-input]")).Clear();
-            _webDriver.FindElement(By.CssSelector("[class=class=input__self input__self_type_text-underline ng-untouched ng-pristine ng-valid pac-target-input]")).SendKeys("ca");
-            Thread.Sleep(2000);
-            _webDriver.FindElement(By.CssSelector("[class=input__self input__self_type_text-underline ng-untouched ng-pristine ng-valid pac-target-input]]")).Click();
+
+            _settingspage.GoToEditPage()
+                .SwitchToProfileSettings();
             
+            Thread.Sleep(1000);
             
-            _webDriver.FindElement(By.XPath("[@class=edit-switcher__icon_type_edit] [2]")).Click();
-            
-            /*var verification = _webDriver.FindElement(By.CssSelector("[class=not-verified-icon]"));
-            Assert.AreEqual(verification, _webDriver.FindElement(By.CssSelector("[class=verification-status]")));*/
+            Assert.That(_webDriver.Url == "https://newbookmodels.com/account-settings/profile/edit");
+        }
+
+        [Test]
+        public void AddCard()
+        {
+            var email = CreateNewEmail(out var date);
+
+            _registrationPage.GoToRegistrationPage()
+                .SetFirstName("MaBelle")
+                .SetLastName("Parker")
+                .SetEmail(email)
+                .SetPassword("Mabel1234!")
+                .SetConfirmPassword("Mabel1234!")
+                .SetPhone("123.321.1122")
+                .ClickSubmitButton();
+
+            Thread.Sleep(1000);
+
+            _settingspage.GoToEditPage()
+                .SetCardInfo();
         }
         
         public static string CreateNewEmail(out string date)

@@ -24,22 +24,14 @@ namespace SeleniumTests
         private static readonly By _phoneField = By.CssSelector("[name=phone_number]");
         private static readonly By _loginButton = By.CssSelector("[class^=SignInForm__submitButton]");
         private static readonly By _submitButton = By.CssSelector("[type=submit]");
-        private static readonly By _finishButton = By.CssSelector("[type=submit]");
         private static readonly By _companyNameField = By.CssSelector("[name=company_name]");
         private static readonly By _companyWebsiteField = By.CssSelector("[name=company_website]");
         private static readonly By _industryNameField = By.CssSelector("[name=industry]");
         private static readonly By _locationField = By.CssSelector("[name=location]");
-        private static readonly By _dropArea = By.CssSelector("[class=SignupAvatar__avatar--IxJnV]");
         
         public RegistrationPage(IWebDriver webDriver)
         {
             _webDriver = webDriver;
-        }
-
-        public RegistrationPage GoToSignInPage()
-        {
-            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/auth/signin");
-            return this;
         }
 
         public RegistrationPage GoToRegistrationPage()
@@ -112,12 +104,6 @@ namespace SeleniumTests
             return this;
         }
 
-        public RegistrationPage ClickLoginButton()
-        {
-            _webDriver.FindElement(_loginButton).Click();
-            return this;
-        }
-
         public RegistrationPage ClickSubmitButton()
         {
             _webDriver.FindElement(_submitButton).Click();
@@ -126,7 +112,7 @@ namespace SeleniumTests
 
         public RegistrationPage ClickFinishButton()
         {
-            _webDriver.FindElement(_finishButton).Click();
+            _webDriver.FindElement(_submitButton).Click();
             return this;
         }
     }
@@ -152,7 +138,37 @@ namespace SeleniumTests
         }
 
         [Test]
-        public void RegistrateNewUser()
+        public void OpenLogInPage()
+        {
+            _registrationPage.GoToRegistrationPage();
+            var link = "https://newbookmodels.com/join";
+            
+            Thread.Sleep(1000);
+            
+            Assert.AreEqual(_webDriver.Url, link);
+        }
+        
+        [Test]
+        public void RegistrateUserFirstStep()
+        {
+            var email = CreateNewEmail(out var date);
+
+            _registrationPage.GoToRegistrationPage()
+                .SetFirstName("MaBelle")
+                .SetLastName("Parker")
+                .SetEmail(email)
+                .SetPassword("Mabel1234!")
+                .SetConfirmPassword("Mabel1234!")
+                .SetPhone("123.321.1122")
+                .ClickSubmitButton();
+            
+            Thread.Sleep(1000);
+            
+            Assert.That(_webDriver.Url == "https://newbookmodels.com/join/company");
+        }
+        
+        [Test]
+        public void RegistrateUserSecondStep()
         {
             var email = CreateNewEmail(out var date);
 
@@ -169,6 +185,10 @@ namespace SeleniumTests
                 .ClickCompanyIndustry()
                 .ClickLocation("da")
                 .ClickFinishButton();
+            
+            Thread.Sleep(1500);
+            
+            Assert.That(_webDriver.Url == "https://newbookmodels.com/explore");
         }
 
         public static string CreateNewEmail(out string date)
