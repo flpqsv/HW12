@@ -20,6 +20,8 @@ namespace SeleniumTests
         public void Test()
         {
             _webDriver = new ChromeDriver("/Users/MaBelle/Downloads/");
+            _webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
+            _webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
         }
 
         [TearDown]
@@ -29,15 +31,13 @@ namespace SeleniumTests
         }
 
         [Test]
-        public void RegistrateNewUser()
+        public void CompleteRegistrateStep1()
         {
             _webDriver.Navigate().GoToUrl("https://newbookmodels.com/");
             _webDriver.FindElement(By.CssSelector("[class*=Navbar__signUp]")).Click();
-            Thread.Sleep(3000);
             
-            var date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm");
-            var email = $"mabel.{date}@gmail.com";
-            
+            var email = CreateEmail(out var date);
+
             _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("MaBelle");
             _webDriver.FindElement(By.CssSelector("[name=last_name]")).SendKeys("Parker");
             _webDriver.FindElement(By.CssSelector("[name=email]")).SendKeys(email);
@@ -46,18 +46,50 @@ namespace SeleniumTests
             _webDriver.FindElement(By.CssSelector("[name=phone_number]")).SendKeys("123.321.1122");
             
             _webDriver.FindElement(By.CssSelector("[type=submit]")).Click();
-            Thread.Sleep(3000);
+            _webDriver.FindElement(By.CssSelector("[name=company_name]")).SendKeys("Henlo World Inc.");
+            
+            Assert.AreEqual("https://newbookmodels.com/join/company", _webDriver.Url);
+        }
+
+        private static string CreateEmail(out string date)
+        {
+            date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm");
+            var email = $"mabel.{date}@gmail.com";
+            return email;
+        }
+
+        [Test]
+        public void CompleteRegistrationStep2()
+        {
+            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/");
+            _webDriver.FindElement(By.CssSelector("[class*=Navbar__signUp]")).Click();
+            
+            var email = CreateEmail(out var date);
+
+            _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("MaBelle");
+            _webDriver.FindElement(By.CssSelector("[name=last_name]")).SendKeys("Parker");
+            _webDriver.FindElement(By.CssSelector("[name=email]")).SendKeys(email);
+            _webDriver.FindElement(By.CssSelector("[name=password]")).SendKeys("Mabel1234!");
+            _webDriver.FindElement(By.CssSelector("[name=password_confirm]")).SendKeys("Mabel1234!");
+            _webDriver.FindElement(By.CssSelector("[name=phone_number]")).SendKeys("123.321.1122");
+            
+            _webDriver.FindElement(By.CssSelector("[type=submit]")).Click();
             
             _webDriver.FindElement(By.CssSelector("[name=company_name]")).SendKeys("Henlo World Inc.");
             _webDriver.FindElement(By.CssSelector("[name=company_website]")).SendKeys("henloworldinc.com");
             _webDriver.FindElement(By.CssSelector("[name=industry]")).Click();
-            _webDriver.FindElement(By.CssSelector("[class=Select__optionText--OxKln]")).Click();
             _webDriver.FindElement(By.CssSelector("[name=location]")).SendKeys("da");
-            Thread.Sleep(2000);
+            Thread.Sleep(1500);
             _webDriver.FindElement(By.CssSelector("[class=pac-matched]")).Click();
+            _webDriver.FindElement(By.CssSelector("[class=Select__optionText--OxKln]")).Click();
             
-            _webDriver.FindElement(By.CssSelector("[class*=SignupCompanyForm__submitButton--3mz3p]")).Click();
-            Thread.Sleep(3000);
+            _webDriver.FindElement(By.XPath("//button[contains(text(),'Finish')]")).Click();
+            Actions actionProvider = new Actions(_webDriver);
+            IWebElement section =
+                _webDriver.FindElement(By.XPath("//div[contains(text(),'Most requested on Newbook')]"));
+            actionProvider.MoveToElement(section).Build().Perform();
+            
+            Assert.AreEqual("https://newbookmodels.com/explore/", _webDriver.Url);
         }
 
         [Test]
