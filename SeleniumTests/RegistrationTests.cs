@@ -22,6 +22,8 @@ namespace SeleniumTests
             _webDriver = new ChromeDriver("/Users/MaBelle/Downloads/");
             _webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
             _webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/");
+            _webDriver.FindElement(By.CssSelector("[class*=Navbar__signUp]")).Click();
         }
 
         [TearDown]
@@ -33,9 +35,6 @@ namespace SeleniumTests
         [Test]
         public void CompleteRegistrateStep1()
         {
-            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/");
-            _webDriver.FindElement(By.CssSelector("[class*=Navbar__signUp]")).Click();
-            
             var email = CreateEmail(out var date);
 
             _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("MaBelle");
@@ -61,9 +60,6 @@ namespace SeleniumTests
         [Test]
         public void CompleteRegistrationStep2()
         {
-            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/");
-            _webDriver.FindElement(By.CssSelector("[class*=Navbar__signUp]")).Click();
-            
             var email = CreateEmail(out var date);
 
             _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("MaBelle");
@@ -78,15 +74,16 @@ namespace SeleniumTests
             _webDriver.FindElement(By.CssSelector("[name=company_name]")).SendKeys("Henlo World Inc.");
             _webDriver.FindElement(By.CssSelector("[name=company_website]")).SendKeys("henloworldinc.com");
             _webDriver.FindElement(By.CssSelector("[name=industry]")).Click();
-            _webDriver.FindElement(By.CssSelector("[name=location]")).SendKeys("da");
-            Thread.Sleep(1500);
-            _webDriver.FindElement(By.CssSelector("[class=pac-matched]")).Click();
             _webDriver.FindElement(By.CssSelector("[class=Select__optionText--OxKln]")).Click();
+            Thread.Sleep(1000);
+            _webDriver.FindElement(By.CssSelector("[name=location]")).SendKeys("da");
+            Thread.Sleep(2000);
+            _webDriver.FindElement(By.CssSelector("[class=pac-matched]")).Click();
+            
             
             _webDriver.FindElement(By.XPath("//button[contains(text(),'Finish')]")).Click();
             Actions actionProvider = new Actions(_webDriver);
-            IWebElement section =
-                _webDriver.FindElement(By.XPath("//div[contains(text(),'Most requested on Newbook')]"));
+            var section = _webDriver.FindElement(By.XPath("//div[contains(text(),'Welcome back')]"));
             actionProvider.MoveToElement(section).Build().Perform();
             
             Assert.AreEqual("https://newbookmodels.com/explore/", _webDriver.Url);
@@ -95,9 +92,6 @@ namespace SeleniumTests
         [Test]
         public void DragAndDropFile()
         {
-            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/");
-            _webDriver.FindElement(By.CssSelector("[class*=Navbar__signUp]")).Click();
-            Thread.Sleep(5000);
             var builder = new Actions(_webDriver);
 
             IWebElement droparea = _webDriver.FindElement(By.CssSelector("[class=SignupAvatar__avatar--IxJnV]"));
@@ -116,6 +110,38 @@ namespace SeleniumTests
 
             IWebElement input = (IWebElement)jse.ExecuteScript(JS_DROP_FILE, target, offsetX, offsetY);
             input.SendKeys(filePath);
+        }
+
+        [Test]
+        public void CompleteStep1WithWrongInfo()
+        {
+            _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("");
+            _webDriver.FindElement(By.CssSelector("[name=last_name]")).SendKeys("");
+            _webDriver.FindElement(By.CssSelector("[name=email]")).SendKeys("wrong_email_format");
+            _webDriver.FindElement(By.CssSelector("[name=password]")).SendKeys("mabelle");
+            _webDriver.FindElement(By.CssSelector("[name=password_confirm]")).SendKeys("123");
+            _webDriver.FindElement(By.CssSelector("[name=phone_number]")).SendKeys("");
+            _webDriver.FindElement(By.CssSelector("[type=submit]")).Click();
+
+            var emptyFirstNameMessage = _webDriver.FindElement(By.XPath(
+                    "//body[1]/nb-app[1]/nb-signup[1]/common-react-bridge[1]/div[1]/div[2]/div[1]/section[1]/section[1]/div[1]/form[1]/section[1]/section[1]/div[1]/div[2]/section[1]/div[1]/section[1]/div[1]/div[1]/label[1]/div[2]/div[1]")).Text;
+            var emptyLastNameMessage = _webDriver.FindElement(By.XPath(
+                    "//body[1]/nb-app[1]/nb-signup[1]/common-react-bridge[1]/div[1]/div[2]/div[1]/section[1]/section[1]/div[1]/form[1]/section[1]/section[1]/div[1]/div[2]/section[1]/div[1]/section[1]/div[1]/div[2]/label[1]/div[2]/div[1]")).Text;
+            var wrongEmailMessage = _webDriver.FindElement(By.XPath("//div[contains(text(),'Invalid Email')]")).Text;
+            var wrongPasswordMessage = _webDriver.FindElement(By.XPath("//div[contains(text(),'Invalid password format')]")).Text;
+            var wrongConfPasswordMessage = _webDriver.FindElement(By.XPath("//div[contains(text(),'Passwords must match')]")).Text;
+            var emptyMobileMessage = _webDriver.FindElement(By.XPath("//div[contains(text(),'Invalid phone format')]")).Text;
+            
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual("Required", emptyFirstNameMessage);
+                Assert.AreEqual("Required", emptyLastNameMessage);
+                Assert.AreEqual("Invalid Email", wrongEmailMessage);
+                Assert.AreEqual("Invalid password format", wrongPasswordMessage);
+                Assert.AreEqual("Passwords must match", wrongConfPasswordMessage);
+                Assert.AreEqual("Invalid phone format", emptyMobileMessage);
+                Assert.AreEqual("https://newbookmodels.com/join", _webDriver.Url);
+            });
         }
     }
 }
