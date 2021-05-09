@@ -12,115 +12,10 @@ using WebDriverManager.Helpers;
 
 namespace SeleniumTests
 {
-    public class RegistrationPage
-    {
-        internal IWebDriver _webDriver;
-        
-        private static readonly By _emailField = By.CssSelector("input[type=email]");
-        private static readonly By _passwordField = By.CssSelector("input[type=password]");
-        private static readonly By _confirmPasswordField = By.CssSelector("[name=password_confirm]");
-        private static readonly By _firstNameField = By.CssSelector("[name=first_name]");
-        private static readonly By _lastNameField = By.CssSelector("[name=last_name]");
-        private static readonly By _phoneField = By.CssSelector("[name=phone_number]");
-        private static readonly By _loginButton = By.CssSelector("[class^=SignInForm__submitButton]");
-        private static readonly By _submitButton = By.CssSelector("[type=submit]");
-        private static readonly By _companyNameField = By.CssSelector("[name=company_name]");
-        private static readonly By _companyWebsiteField = By.CssSelector("[name=company_website]");
-        private static readonly By _industryNameField = By.CssSelector("[name=industry]");
-        private static readonly By _locationField = By.CssSelector("[name=location]");
-        
-        public RegistrationPage(IWebDriver webDriver)
-        {
-            _webDriver = webDriver;
-        }
-
-        public RegistrationPage GoToRegistrationPage()
-        {
-            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/");
-            _webDriver.FindElement(By.CssSelector("[class*=Navbar__signUp]")).Click();
-            return this;
-        }
-
-        public RegistrationPage SetEmail(string email)
-        {
-            _webDriver.FindElement(_emailField).SendKeys(email);
-            return this;
-        }
-
-        public RegistrationPage SetPassword(string password)
-        {
-            _webDriver.FindElement(_passwordField).SendKeys(password);
-            return this;
-        }
-        
-        public RegistrationPage SetConfirmPassword(string password)
-        {
-            _webDriver.FindElement(_confirmPasswordField).SendKeys(password);
-            return this;
-        }
-
-        public RegistrationPage SetFirstName(string firstName)
-        {
-            _webDriver.FindElement(_firstNameField).SendKeys(firstName);
-            return this;
-        }
-        
-        public RegistrationPage SetLastName(string lastName)
-        {
-            _webDriver.FindElement(_lastNameField).SendKeys(lastName);
-            return this;
-        }
-
-        public RegistrationPage SetPhone(string phone)
-        {
-            _webDriver.FindElement(_phoneField).SendKeys(phone);
-            return this;
-        }
-
-        public RegistrationPage SetCompanyName(string companyName)
-        {
-            _webDriver.FindElement(_companyNameField).SendKeys(companyName);
-            return this;
-        }
-        
-        public RegistrationPage SetCompanyWebsite(string companyWebsite)
-        {
-            _webDriver.FindElement(_companyWebsiteField).SendKeys(companyWebsite);
-            return this;
-        }
-
-        public RegistrationPage ClickCompanyIndustry()
-        {
-            _webDriver.FindElement(_industryNameField).Click();
-            _webDriver.FindElement(By.CssSelector("[class=Select__optionText--OxKln]")).Click();
-            return this;
-        }
-
-        public RegistrationPage ClickLocation(string location)
-        {
-            _webDriver.FindElement(_locationField).SendKeys(location);
-            Thread.Sleep(3000);
-            _webDriver.FindElement(By.CssSelector("[class=pac-matched]")).Click();
-            return this;
-        }
-
-        public RegistrationPage ClickSubmitButton()
-        {
-            _webDriver.FindElement(_submitButton).Click();
-            return this;
-        }
-
-        public RegistrationPage ClickFinishButton()
-        {
-            _webDriver.FindElement(_submitButton).Click();
-            return this;
-        }
-    }
-    
     public class RegistrationTests
     {
         private IWebDriver _webDriver;
-        private RegistrationPage _registrationPage;
+        private RegistrationPageObject _registrationPageObject;
         
         [SetUp]
         public void Test()
@@ -128,7 +23,7 @@ namespace SeleniumTests
             _webDriver = new ChromeDriver("/Users/MaBelle/Downloads/");
             _webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
             _webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
-            _registrationPage = new RegistrationPage(_webDriver);
+            _registrationPageObject = new RegistrationPageObject(_webDriver);
         }
 
         [TearDown]
@@ -140,39 +35,36 @@ namespace SeleniumTests
         [Test]
         public void OpenLogInPage()
         {
-            _registrationPage.GoToRegistrationPage();
-            var link = "https://newbookmodels.com/join";
+            _registrationPageObject.GoToRegistrationPage();
+            Thread.Sleep(1500);
             
-            Thread.Sleep(1000);
-            
-            Assert.AreEqual(_webDriver.Url, link);
+            Assert.AreEqual("https://newbookmodels.com/join", _webDriver.Url);
         }
         
         [Test]
-        public void RegistrateUserFirstStep()
+        public void RegistrateUserStep1()
         {
             var email = CreateNewEmail(out var date);
 
-            _registrationPage.GoToRegistrationPage()
+            _registrationPageObject.GoToRegistrationPage()
                 .SetFirstName("MaBelle")
                 .SetLastName("Parker")
                 .SetEmail(email)
                 .SetPassword("Mabel1234!")
                 .SetConfirmPassword("Mabel1234!")
                 .SetPhone("123.321.1122")
-                .ClickSubmitButton();
+                .ClickSubmitButton()
+                .SetCompanyName("check");
             
-            Thread.Sleep(1000);
-            
-            Assert.That(_webDriver.Url == "https://newbookmodels.com/join/company");
+            Assert.AreEqual("https://newbookmodels.com/join/company", _webDriver.Url);
         }
         
         [Test]
-        public void RegistrateUserSecondStep()
+        public void RegistrateUserStep2()
         {
             var email = CreateNewEmail(out var date);
 
-            _registrationPage.GoToRegistrationPage()
+            _registrationPageObject.GoToRegistrationPage()
                 .SetFirstName("MaBelle")
                 .SetLastName("Parker")
                 .SetEmail(email)
@@ -188,10 +80,10 @@ namespace SeleniumTests
             
             Thread.Sleep(1500);
             
-            Assert.That(_webDriver.Url == "https://newbookmodels.com/explore");
+            Assert.AreEqual("https://newbookmodels.com/explore/", _webDriver.Url);
         }
 
-        public static string CreateNewEmail(out string date)
+        private static string CreateNewEmail(out string date)
         {
             date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm");
             var email = $"mabel.{date}@gmail.com";
@@ -201,11 +93,11 @@ namespace SeleniumTests
         [Test]
         public void DragAndDropFile()
         {
-            _registrationPage.GoToRegistrationPage();
+            _registrationPageObject.GoToRegistrationPage();
             
             var builder = new Actions(_webDriver);
 
-            IWebElement droparea = _registrationPage._webDriver.FindElement(By.CssSelector("[class=SignupAvatar__avatar--IxJnV]"));
+            IWebElement droparea = _registrationPageObject._webDriver.FindElement(By.CssSelector("[class=SignupAvatar__avatar--IxJnV]"));
             DropFile(droparea, @"/Users/Mabelle/Downloads/67913270_2607448572640247_7383304177759289344_o.jpg");
         }
         

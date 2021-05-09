@@ -12,56 +12,11 @@ using WebDriverManager.Helpers;
 
 namespace SeleniumTests
 {
-    public class SignInPage
-    {
-        internal IWebDriver _webDriver;
-        
-        private static readonly By _emailField = By.CssSelector("input[type=email]");
-        private static readonly By _passwordField = By.CssSelector("input[type=password]");
-        private static readonly By _loginButton = By.CssSelector("[class^=SignInForm__submitButton]");
-        private static readonly By _errorMsg = By.XPath("//*[contains(@class, 'SignInForm__submitButton')]/../../div[contains(@class, 'PageForm')][last()]");
-        
-        public SignInPage(IWebDriver webDriver)
-        {
-            _webDriver = webDriver;
-        }
-
-        public SignInPage GoToSignInPage()
-        {
-            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/auth/signin");
-            return this;
-        }
-        
-        public SignInPage SetEmail(string email)
-        {
-            _webDriver.FindElement(_emailField).SendKeys(email);
-            return this;
-        }
-
-        public SignInPage SetPassword(string password)
-        {
-            _webDriver.FindElement(_passwordField).SendKeys(password);
-            return this;
-        }
-        
-        public SignInPage ClickLoginButton()
-        {
-            _webDriver.FindElement(_loginButton).Click();
-            return this;
-        }
-
-        public string GetUserAccountBlockMessage()
-        {
-            var errorMsg = _webDriver.FindElement(_errorMsg).Text;
-            return errorMsg;
-        }
-    }
-    
-    public class LogInPageTests
+    public class SignInTests
     {
         private IWebDriver _webDriver;
-        private SignInPage _signInPage;
-        private RegistrationPage _registrationPage;
+        private SignInPageObject _signInPageObject;
+        private RegistrationPageObject _registrationPageObject;
         
         [SetUp]
         public void Test()
@@ -69,9 +24,9 @@ namespace SeleniumTests
             _webDriver = new ChromeDriver("/Users/MaBelle/Downloads/");
             _webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
             _webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
-            _signInPage = new SignInPage(_webDriver);
+            _signInPageObject = new SignInPageObject(_webDriver);
             
-            _registrationPage = new RegistrationPage(_webDriver);
+            _registrationPageObject = new RegistrationPageObject(_webDriver);
         }
 
         [TearDown]
@@ -86,7 +41,7 @@ namespace SeleniumTests
             var email = CreateNewEmail(out var date);
             var password = "Mabel1234!";
 
-            _registrationPage.GoToRegistrationPage()
+            _registrationPageObject.GoToRegistrationPage()
                 .SetFirstName("MaBelle")
                 .SetLastName("Parker")
                 .SetEmail(email)
@@ -97,7 +52,7 @@ namespace SeleniumTests
 
             Thread.Sleep(2000);
             
-            _signInPage.GoToSignInPage()
+            _signInPageObject.GoToSignInPage()
                 .SetEmail(email)
                 .SetPassword(password)
                 .ClickLoginButton();
@@ -110,14 +65,14 @@ namespace SeleniumTests
         [Test]
         public void CheckUserAccountBlockMessage()
         {
-            _signInPage.GoToSignInPage()
+            _signInPageObject.GoToSignInPage()
                 .SetEmail("godedo6298@cnxingye.com")
                 .SetPassword("Mabel123!")
                 .ClickLoginButton();
             
             Thread.Sleep(1000);
             
-            var actualMsg = _signInPage.GetUserAccountBlockMessage();
+            var actualMsg = _signInPageObject.GetUserAccountBlockMessage();
             
             Assert.AreEqual("User account is blocked.", actualMsg);
         }
@@ -125,17 +80,17 @@ namespace SeleniumTests
         [Test]
         public void CheckWrongMessagePassword()
         {
-            _signInPage.GoToSignInPage()
+            _signInPageObject.GoToSignInPage()
                 .SetEmail("godedo6298@cnxingye.com")
                 .SetPassword("randomPass")
                 .ClickLoginButton();
             
-            var actualMsg = _signInPage.GetUserAccountBlockMessage();
+            var actualMsg = _signInPageObject.GetUserAccountBlockMessage();
             
             Assert.AreEqual("Please enter a correct email and password.", actualMsg);
         }
-        
-        public static string CreateNewEmail(out string date)
+
+        private static string CreateNewEmail(out string date)
         {
             date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm");
             var email = $"mabel.{date}@gmail.com";
