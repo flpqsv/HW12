@@ -126,6 +126,36 @@ namespace SeleniumTests
         }
 
         [Test]
+        public void CheckIfEmailIsNotVerified()
+        {
+            var email = CreateEmail(out var date);
+
+            _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("MaBelle");
+            _webDriver.FindElement(By.CssSelector("[name=last_name]")).SendKeys("Parker");
+            _webDriver.FindElement(By.CssSelector("[name=email]")).SendKeys(email);
+            _webDriver.FindElement(By.CssSelector("[name=password]")).SendKeys("Mabel1234!");
+            _webDriver.FindElement(By.CssSelector("[name=password_confirm]")).SendKeys("Mabel1234!");
+            _webDriver.FindElement(By.CssSelector("[name=phone_number]")).SendKeys("123.321.1122");
+            _webDriver.FindElement(By.CssSelector("[type=submit]")).Click();
+            
+            _webDriver.FindElement(By.CssSelector("[name=company_name]")).SendKeys("Henlo World Inc.");
+            _webDriver.FindElement(By.CssSelector("[name=company_website]")).SendKeys("henloworldinc.com");
+            _webDriver.FindElement(By.CssSelector("[name=industry]")).Click();
+            _webDriver.FindElement(By.CssSelector("[class=Select__optionText--OxKln]")).Click();
+            Thread.Sleep(1000);
+            _webDriver.FindElement(By.CssSelector("[name=location]")).SendKeys("da");
+            Thread.Sleep(2000);
+            _webDriver.FindElement(By.CssSelector("[class=pac-matched]")).Click();
+            _webDriver.FindElement(By.XPath("//button[contains(text(),'Finish')]")).Click();
+
+            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/account-settings/account-info/edit");
+
+            var emailStatus = _webDriver.FindElement(By.XPath("//nb-paragraph[1]/div[1]/div[1]/div[2]/span[1]")).Text;
+
+            Assert.AreEqual("Not Verified", emailStatus);
+        }
+
+        [Test]
         public void EditPassword()
         {
             var email = CreateEmail(out var date);
@@ -305,10 +335,66 @@ namespace SeleniumTests
             });
         }
         
+        [Test]
+        public void TryToChangeEmailWithWrongPassword()
+        {
+            var email = CreateEmail(out var date);
+
+            _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("MaBelle");
+            _webDriver.FindElement(By.CssSelector("[name=last_name]")).SendKeys("Parker");
+            _webDriver.FindElement(By.CssSelector("[name=email]")).SendKeys(email);
+            _webDriver.FindElement(By.CssSelector("[name=password]")).SendKeys("Mabel1234!");
+            _webDriver.FindElement(By.CssSelector("[name=password_confirm]")).SendKeys("Mabel1234!");
+            _webDriver.FindElement(By.CssSelector("[name=phone_number]")).SendKeys("123.321.1122");
+            _webDriver.FindElement(By.CssSelector("[type=submit]")).Click();
+            Thread.Sleep(1000);
+
+            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/account-settings/account-info/edit");
+            
+            _webDriver.FindElement(By.XPath("//div[1]/nb-account-info-email-address[1]/form[1]/div[1]/div[1]/nb-edit-switcher[1]/div[1]/div[1]")).Click();
+            _webDriver.FindElement(By.XPath("//div[1]/nb-account-info-email-address[1]/form[1]/div[2]/div[1]/common-input[1]/label[1]/input[1]")).SendKeys("random_pass");
+            
+            var newEmail = CreateEmail(out date);
+            _webDriver.FindElement(By.XPath("//div[1]/nb-account-info-email-address[1]/form[1]/div[2]/div[1]/common-input[2]/label[1]/input[1]")).SendKeys($"new.{newEmail}");
+            _webDriver.FindElement(By.XPath("//button[contains(text(),'Save Changes')]")).Click();
+
+            var systemResponse = _webDriver.FindElement(By.XPath("//span[contains(text(),'Invalid old password.')]")).Text;
+            
+            Assert.AreEqual("Invalid old password.", systemResponse);
+        }
+
+        [Test]
+        public void TryToChangePasswordWithWrongCurrentPassword()
+        {
+             var email = CreateEmail(out var date);
+
+            _webDriver.FindElement(By.CssSelector("[name=first_name]")).SendKeys("MaBelle");
+            _webDriver.FindElement(By.CssSelector("[name=last_name]")).SendKeys("Parker");
+            _webDriver.FindElement(By.CssSelector("[name=email]")).SendKeys(email);
+            _webDriver.FindElement(By.CssSelector("[name=password]")).SendKeys("Mabel1234!");
+            _webDriver.FindElement(By.CssSelector("[name=password_confirm]")).SendKeys("Mabel1234!");
+            _webDriver.FindElement(By.CssSelector("[name=phone_number]")).SendKeys("123.321.1122");
+            _webDriver.FindElement(By.CssSelector("[type=submit]")).Click();
+            Thread.Sleep(1000);
+            _webDriver.Navigate().GoToUrl("https://newbookmodels.com/account-settings/account-info/edit");
+            
+            _webDriver.FindElement(By.XPath("//div[1]/nb-account-info-password[1]/form[1]/div[1]/div[1]/nb-edit-switcher[1]/div[1]/div[1]")).Click();
+
+            var newPassword = "MaBelle123!";
+            _webDriver.FindElement(By.XPath("//div[1]/nb-account-info-password[1]/form[1]/div[2]/div[1]/common-input[1]/label[1]/input[1]")).SendKeys("random_pass");
+            _webDriver.FindElement(By.XPath("//div[1]/nb-account-info-password[1]/form[1]/div[2]/div[1]/common-input[2]/label[1]/input[1]")).SendKeys(newPassword);
+            _webDriver.FindElement(By.XPath("//div[1]/nb-account-info-password[1]/form[1]/div[2]/div[1]/common-input[3]/label[1]/input[1]")).SendKeys(newPassword);
+            _webDriver.FindElement(By.XPath("//button[contains(text(),'Save Changes')]")).Click();
+            
+            var systemResponse = _webDriver.FindElement(By.XPath("//span[contains(text(),'Invalid old password.')]")).Text;
+            
+            Assert.AreEqual("Invalid old password.", systemResponse);
+        }
+        
         private static string CreateEmail(out string date)
         {
             date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm");
-            var email = $"mabel.{date}@gmail.com";
+            var email = $"mabel1.{date}@gmail.com";
             return email;
         }
     }
