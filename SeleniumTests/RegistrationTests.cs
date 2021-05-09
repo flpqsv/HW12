@@ -68,7 +68,6 @@ namespace SeleniumTests
             _webDriver.FindElement(By.CssSelector("[name=password]")).SendKeys("Mabel1234!");
             _webDriver.FindElement(By.CssSelector("[name=password_confirm]")).SendKeys("Mabel1234!");
             _webDriver.FindElement(By.CssSelector("[name=phone_number]")).SendKeys("123.321.1122");
-            
             _webDriver.FindElement(By.CssSelector("[type=submit]")).Click();
             
             _webDriver.FindElement(By.CssSelector("[name=company_name]")).SendKeys("Henlo World Inc.");
@@ -79,9 +78,8 @@ namespace SeleniumTests
             _webDriver.FindElement(By.CssSelector("[name=location]")).SendKeys("da");
             Thread.Sleep(2000);
             _webDriver.FindElement(By.CssSelector("[class=pac-matched]")).Click();
-            
-            
             _webDriver.FindElement(By.XPath("//button[contains(text(),'Finish')]")).Click();
+            
             Actions actionProvider = new Actions(_webDriver);
             var section = _webDriver.FindElement(By.XPath("//div[contains(text(),'Welcome back')]"));
             actionProvider.MoveToElement(section).Build().Perform();

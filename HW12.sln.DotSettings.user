@@ -1,5 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=49ec7ef6_002D4e4a_002D49de_002Da88f_002D60c3a3f7e177/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CompleteRegistrateStep1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=49ec7ef6_002D4e4a_002D49de_002Da88f_002D60c3a3f7e177/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CompleteRegistrateStep1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.RegistrationTests.CompleteRegistrateStep1&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.SignInTests.SignInSuccessfully&lt;/TestId&gt;
@@ -7,6 +7,10 @@
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.RegistrationTests.CompleteStep1WithWrongInfo&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.SignInTests.SignInWithWrongInfo&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.SignInTests.SignInWithWrongPassword&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.AccountSettingsTests.CompleteRegistrateStep1&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.AccountSettingsTests.EditGenInformation&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.AccountSettingsTests.EditEmailAddress&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.AccountSettingsTests.EditPassword&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=90ee6877_002D9f84_002D49dd_002Daee9_002Df5a30d1027d8/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CompleteRegistrateStep1 #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
@@ -19,6 +23,15 @@
   &lt;TestAncestor&gt;
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.RegistrationTests&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.SignInTests.SignInSuccessfully&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9de8417b_002D5bc3_002D42df_002Da6c1_002Dc10809063cda/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="EditPassword" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.AccountSettingsTests.EditPassword&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.RegistrationTests.CompleteRegistrationStep2&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.AccountSettingsTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.RegistrationTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.SignInTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a4a9e7f5_002D23bf_002D4b55_002D9c6f_002Dc5cf7b4176ab/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
