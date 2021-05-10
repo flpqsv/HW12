@@ -30,6 +30,13 @@ namespace SeleniumTests
         private static readonly By _industryMatch = By.CssSelector("[class=Select__optionText--OxKln]");
         private static readonly By _locationField = By.CssSelector("[name=location]");
         private static readonly By _locationMatch = By.CssSelector("[class=pac-matched]");
+
+        private static readonly By _emptyFirstNameMessage = By.XPath("//div[1]/div[1]/label[1]/div[2]/div[1]");
+        private static readonly By _emptyLastNameMessage = By.XPath("//div[1]/div[2]/label[1]/div[2]/div[1]");
+        private static readonly By _wrongEmailMessage = By.XPath("//div[contains(text(),'Invalid Email')]");
+        private static readonly By _wrongPasswordMessage = By.XPath("//div[contains(text(),'Invalid password format')]");
+        private static readonly By _wrongConfPasswordMessage = By.XPath("//div[contains(text(),'Passwords must match')]");
+        private static readonly By _emptyPhoneMessage = By.XPath("//div[contains(text(),'Invalid phone format')]");
         
         public RegistrationPageObject(IWebDriver webDriver)
         {
@@ -117,6 +124,42 @@ namespace SeleniumTests
         {
             _webDriver.FindElement(_finishButton).Click();
             return this;
+        }
+
+        public string GetWrongFirstNameMessage()
+        {
+            string errorMessage = _webDriver.FindElement(_emptyFirstNameMessage).Text;
+            return errorMessage;
+        }
+        
+        public string GetWrongLastNameMessage()
+        {
+            string errorMessage = _webDriver.FindElement(_emptyLastNameMessage).Text;
+            return errorMessage;
+        }
+        
+        public string GetWrongEmailMessage()
+        {
+            string errorMessage = _webDriver.FindElement(_wrongEmailMessage).Text;
+            return errorMessage;
+        }
+       
+        public string GetWrongPasswordMessage()
+        {
+            string errorMessage = _webDriver.FindElement(_wrongPasswordMessage).Text;
+            return errorMessage;
+        }
+        
+        public string GetWrongConfirmPasswordMessage()
+        {
+            string errorMessage = _webDriver.FindElement(_wrongConfPasswordMessage).Text;
+            return errorMessage;
+        }
+        
+        public string GetWrongPhoneMessage()
+        {
+            string errorMessage = _webDriver.FindElement(_emptyPhoneMessage).Text;
+            return errorMessage;
         }
     }
 }

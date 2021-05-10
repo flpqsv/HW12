@@ -17,6 +17,7 @@ namespace SeleniumTests
         private IWebDriver _webDriver;
         private SignInPageObject _signInPageObject;
         private RegistrationPageObject _registrationPageObject;
+        private AccountSettingsPageObject _accountSettingsPageObject;
         
         [SetUp]
         public void Test()
@@ -25,8 +26,9 @@ namespace SeleniumTests
             _webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
             _webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
             _signInPageObject = new SignInPageObject(_webDriver);
-            
             _registrationPageObject = new RegistrationPageObject(_webDriver);
+            _accountSettingsPageObject = new AccountSettingsPageObject(_webDriver);
+            
         }
 
         [TearDown]
@@ -36,7 +38,7 @@ namespace SeleniumTests
         }
         
         [Test]
-        public void LogIn()
+        public void SignInSuccessfully()
         {
             var email = CreateNewEmail(out var date);
             var password = "Mabel1234!";
@@ -50,16 +52,18 @@ namespace SeleniumTests
                 .SetPhone("123.321.1122")
                 .ClickSubmitButton();
 
-            Thread.Sleep(2000);
+            _accountSettingsPageObject.GoToEditPage()
+                .ClickLogOut();
+
+            Thread.Sleep(1000);
             
-            _signInPageObject.GoToSignInPage()
-                .SetEmail(email)
+            _signInPageObject.SetEmail(email)
                 .SetPassword(password)
                 .ClickLoginButton();
             
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
             
-            Assert.That(_webDriver.Url == "https://newbookmodels.com/join/company?goBackUrl=%2Fexplore");
+            Assert.AreEqual("https://newbookmodels.com/join/company?goBackUrl=%2Fexplore", _webDriver.Url);
         }
 
         [Test]
@@ -78,21 +82,30 @@ namespace SeleniumTests
         }
 
         [Test]
-        public void CheckWrongMessagePassword()
+        public void SignInWithWrongPassword()
         {
             _signInPageObject.GoToSignInPage()
                 .SetEmail("godedo6298@cnxingye.com")
                 .SetPassword("randomPass")
                 .ClickLoginButton();
             
-            var actualMsg = _signInPageObject.GetUserAccountBlockMessage();
+            Assert.AreEqual("Please enter a correct email and password.", _signInPageObject.GetWrongPasswordMessage());
+        }
+        
+        [Test]
+        public void SignInWithWrongEmail()
+        {
+            _signInPageObject.GoToSignInPage()
+                .SetEmail("wrong_email")
+                .SetPassword("Mabel1234!")
+                .ClickLoginButton();
             
-            Assert.AreEqual("Please enter a correct email and password.", actualMsg);
+            Assert.AreEqual("Invalid Email", _signInPageObject.GetWrongEmailMessage());
         }
 
         private static string CreateNewEmail(out string date)
         {
-            date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm");
+            date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm.ss");
             var email = $"mabel.{date}@gmail.com";
             return email;
         }

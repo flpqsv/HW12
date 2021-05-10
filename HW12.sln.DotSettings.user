@@ -14,6 +14,8 @@
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.AccountSettingsTests&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.RegistrationTests&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.SignInTests.LogIn&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.SignInTests.CheckUserAccountBlockMessage&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::ED2424B0-842C-4F48-A5D5-E0D3CD308602::.NETCoreApp,Version=v3.1::SeleniumTests.SignInTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=99914b7c_002D36f5_002D484b_002D977c_002Dd970ce683e4f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AccountSettingsTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;

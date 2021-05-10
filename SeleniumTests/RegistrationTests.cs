@@ -24,6 +24,7 @@ namespace SeleniumTests
             _webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
             _webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
             _registrationPageObject = new RegistrationPageObject(_webDriver);
+            _registrationPageObject.GoToRegistrationPage();
         }
 
         [TearDown]
@@ -33,11 +34,9 @@ namespace SeleniumTests
         }
 
         [Test]
-        public void OpenLogInPage()
+        public void OpenRegistrationPage()
         {
-            _registrationPageObject.GoToRegistrationPage();
             Thread.Sleep(1500);
-            
             Assert.AreEqual("https://newbookmodels.com/join", _webDriver.Url);
         }
         
@@ -46,8 +45,7 @@ namespace SeleniumTests
         {
             var email = CreateNewEmail(out var date);
 
-            _registrationPageObject.GoToRegistrationPage()
-                .SetFirstName("MaBelle")
+            _registrationPageObject.SetFirstName("MaBelle")
                 .SetLastName("Parker")
                 .SetEmail(email)
                 .SetPassword("Mabel1234!")
@@ -64,8 +62,7 @@ namespace SeleniumTests
         {
             var email = CreateNewEmail(out var date);
 
-            _registrationPageObject.GoToRegistrationPage()
-                .SetFirstName("MaBelle")
+            _registrationPageObject.SetFirstName("MaBelle")
                 .SetLastName("Parker")
                 .SetEmail(email)
                 .SetPassword("Mabel1234!")
@@ -85,7 +82,7 @@ namespace SeleniumTests
 
         private static string CreateNewEmail(out string date)
         {
-            date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm");
+            date = DateTime.Now.ToString("yyyy.MM.dd.hh.mm.ss");
             var email = $"mabel.{date}@gmail.com";
             return email;
         }
@@ -93,8 +90,6 @@ namespace SeleniumTests
         [Test]
         public void DragAndDropFile()
         {
-            _registrationPageObject.GoToRegistrationPage();
-            
             var builder = new Actions(_webDriver);
 
             IWebElement droparea = _registrationPageObject._webDriver.FindElement(By.CssSelector("[class=SignupAvatar__avatar--IxJnV]"));
@@ -113,6 +108,29 @@ namespace SeleniumTests
 
             IWebElement input = (IWebElement)jse.ExecuteScript(JS_DROP_FILE, target, offsetX, offsetY);
             input.SendKeys(filePath);
+        }
+        
+        [Test]
+        public void CompleteStep1WithWrongInfo()
+        {
+            _registrationPageObject.SetFirstName("")
+                .SetLastName("")
+                .SetEmail("wrong_email_format")
+                .SetPassword("mabelle")
+                .SetConfirmPassword("123")
+                .SetPhone("")
+                .ClickSubmitButton();
+            
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual("Required", _registrationPageObject.GetWrongFirstNameMessage());
+                Assert.AreEqual("Required", _registrationPageObject.GetWrongLastNameMessage());
+                Assert.AreEqual("Invalid Email", _registrationPageObject.GetWrongEmailMessage());
+                Assert.AreEqual("Invalid password format", _registrationPageObject.GetWrongPasswordMessage());
+                Assert.AreEqual("Passwords must match", _registrationPageObject.GetWrongConfirmPasswordMessage());
+                Assert.AreEqual("Invalid phone format", _registrationPageObject.GetWrongPhoneMessage());
+                Assert.AreEqual("https://newbookmodels.com/join", _webDriver.Url);
+            });
         }
     }
 }

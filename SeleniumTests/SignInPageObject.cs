@@ -37,6 +37,7 @@ namespace SeleniumTests
         public SignInPageObject SetEmail(string email)
         {
             _webDriver.FindElement(_emailField).SendKeys(email);
+            Thread.Sleep(500);
             return this;
         }
 

@@ -48,8 +48,12 @@ namespace SeleniumTests
         private static readonly By _profileButton = By.XPath("//div[contains(text(),'PROFILE')]");
         private static readonly By _editProfileButton = By.XPath("//nb-profile-settings[1]/div[1]/div[1]/div[1]");
         private static readonly By _companyNameField = By.XPath("//div[1]/div[2]/common-input[1]/label[1]/input[1]");
-        private static readonly By _companyWebsiteField = By.XPath("//div[1]/div[2]/common-input[1]/label[1]/input[1]");
+        private static readonly By _companyWebsiteField = By.XPath("//div[2]/div[2]/common-input[1]/label[1]/input[1]");
         private static readonly By _descriptionField = By.XPath("//div[1]/div[1]/common-textarea[1]/label[1]/textarea[1]");
+        
+        private static readonly By _companyName = By.XPath("//nb-profile-settings-view[1]/div[1]/div[2]/div[1]/div[1]");
+        private static readonly By _companyWebsite = By.XPath("//a[@target='_blank']");
+        private static readonly By _description = By.XPath("//nb-profile-settings-view[1]/div[1]/div[3]");
         
         private static readonly By _newFirstName = By.XPath("//div[1]/nb-account-info-general-information[1]/form[1]/div[2]/div[1]/common-input[1]/label[1]/input[1]");
         private static readonly By _newLastName = By.XPath("//div[1]/nb-account-info-general-information[1]/form[1]/div[2]/div[1]/common-input[2]/label[1]/input[1]");
@@ -57,6 +61,8 @@ namespace SeleniumTests
         private static readonly By _newIndustry = By.XPath("//div[1]/nb-account-info-general-information[1]/form[1]/div[2]/div[1]/common-input[3]/label[1]/input[1]");
         private static readonly By _newEmail = By.XPath("//div[1]/nb-account-info-email-address[1]/form[1]/div[2]/div[1]/nb-paragraph[1]/div[1]/div[1]/div[1]/span[1]");
         private static readonly By _newNumber = By.XPath("//div[2]/div[1]/nb-paragraph[2]/div[1]/span[1]");
+        
+        private static readonly By _errorMessageWrongPassword = By.XPath("//span[contains(text(),'Invalid old password.')]");
 
         public AccountSettingsPageObject(IWebDriver webDriver)
         {
@@ -66,12 +72,14 @@ namespace SeleniumTests
         public AccountSettingsPageObject GoToEditPage()
         {
             _webDriver.Navigate().GoToUrl("https://newbookmodels.com/account-settings/account-info/edit");
+            Thread.Sleep(1000);
             return this;
         }
 
         public AccountSettingsPageObject ClickEditGenInfo()
         {
             _webDriver.FindElement(_genInfoEditButton).Click();
+            Thread.Sleep(2000);
             return this;
         }
         
@@ -274,6 +282,30 @@ namespace SeleniumTests
             _webDriver.FindElement(_descriptionField).Clear();
             _webDriver.FindElement(_descriptionField).SendKeys(description);
             return this;
+        }
+
+        public string GetCompanyName()
+        {
+            var companyName = _webDriver.FindElement(_companyName).Text;
+            return companyName;
+        }
+        
+        public string GetCompanyWebsite()
+        {
+            var companyWebsite = _webDriver.FindElement(_companyWebsite).Text;
+            return companyWebsite;
+        }
+        
+        public string GetDescription()
+        {
+            var description = _webDriver.FindElement(_description).Text;
+            return description;
+        }
+        
+        public string GetErrorMessage()
+        {
+            var errorMessage = _webDriver.FindElement(_errorMessageWrongPassword).Text;
+            return errorMessage;
         }
     }
 }
